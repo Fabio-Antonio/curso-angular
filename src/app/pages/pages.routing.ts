@@ -8,6 +8,7 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { AuthGuard } from '../guards/auth.guard';
+import { PerfilComponent } from './perfil/perfil.component';
 
 const routes: Routes = [
   {path:'dashboard',component:PagesComponent,canActivate:[AuthGuard], children:[
@@ -17,6 +18,7 @@ const routes: Routes = [
   {path:'account-settings',component:AccountSettingsComponent , data:{titulo:'Ajustes'}},
   {path:'promesas',component:PromesasComponent , data:{titulo:'Promesas'}},
   {path:'rxjs',component:RxjsComponent , data:{titulo:'Rxjs'}},
+  {path:'perfil',component:PerfilComponent , data:{titulo:'perfil'}},
   ]},  
 
  

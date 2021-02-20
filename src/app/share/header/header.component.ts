@@ -8,8 +8,12 @@ import { UsuarioService } from 'src/app/services/usuario.service';
   ]
 })
 export class HeaderComponent  {
-
-  constructor(private usuarioService : UsuarioService) { }
+public imgUrl = '';
+public User = '';
+  constructor(private usuarioService : UsuarioService) {
+    this.imgUrl = usuarioService.usuario.imagenUrl;
+    this.User = usuarioService.usuario.User;
+   }
 
   logout(){
     this.usuarioService.logout();
