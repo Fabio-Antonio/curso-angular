@@ -14,7 +14,10 @@ export class usuario {
     ){}
 
     get imagenUrl(){
-        if(this.img){
+
+      if(!this.img){
+        return `${base_urls}/uploads/no-img.png`;
+      }else if(this.img){
           return `${base_urls}${this.img}`
         }
         return `${base_urls}/uploads/no-img.png`;

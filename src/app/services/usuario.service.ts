@@ -7,6 +7,7 @@ import {catchError, map, tap} from 'rxjs/operators'
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { usuario } from '../models/usuario.model';
+import {CargarUsuarios} from '../interfaces/cargar-usuarios.interface'
 
 const base_url = environment.base_url;
 declare const gapi:any;
@@ -58,7 +59,6 @@ validarToken():Observable<boolean>{
     }
   }).pipe(
     map((resp:any)=>{
-      console.log(resp);
       const { email,google,nombre,role,img='',uid} = resp.usuario;
       this.usuario = new usuario(role,google,nombre,'',email,img,uid);
       localStorage.setItem('token',resp.token);
@@ -100,6 +100,14 @@ get token():string{
 return localStorage.getItem('token')|| '';
 }
 
+get headers(){
+  return { 
+    headers:{
+    'x-token':this.token
+  }
+}
+}
+
 get uid():string{
   return this.usuario.uid||'';
 }
@@ -114,6 +122,53 @@ get uid():string{
         'x-token':this.token
       }
     })
+  }
+
+  cargarUsuarios(desde: number = 0){
+    return this.http.get<CargarUsuarios>(`${base_url}/usuarios?desde=${desde}`,{
+      headers:{
+        'x-token':this.token
+      }
+    })
+    .pipe(
+      map( resp =>{
+        const usuarios = resp.usuarios.map(
+          user => new usuario(user.role,user.google,user.nombre,'',user.email,user.img,user.uid) 
+        );
+        return {
+          total:resp.total,
+          usuarios 
+        }
+      })
+    )
+  }
+
+private transformarUsuarios( resultados: any []): usuario [] {
+return resultados.map(
+  user => new usuario(user.role,user.google,user.nombre,'',user.email,user.img,user.uid)
+);
+
+}
+
+  buscar(tipo: 'usuarios'|'medicos'|'hospitales',termino : string){
+     const url = `${base_url}/todo/coleccion/${tipo}/${termino}`;
+      
+     return this.http.get<any[]>(url,this.headers)
+     .pipe(
+       
+       map((resp:any)=>{
+          switch(tipo){
+            case 'usuarios':
+              
+              return this.transformarUsuarios(resp.data);
+            break;
+
+            default :
+            return [];
+          }
+       })
+       
+     );
   }
 
 }
